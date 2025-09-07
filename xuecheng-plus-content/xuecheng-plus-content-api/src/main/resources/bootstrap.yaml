@@ -1,0 +1,40 @@
+#微服务配置
+spring:
+  profiles:
+    active: dev
+  application:
+   name: content-api
+  cloud:
+    nacos:
+      server-addr: 172.19.186.192:8848
+      discovery:
+        # 用于推送 content-api 服务
+        username: nacos
+        password: nacos
+        group: xuecheng-plus-project
+        namespace: ${spring.profiles.active}
+      config:
+        # 用于拉取 content-api-dev.yaml
+        namespace: ${spring.profiles.active}
+        group: xuecheng-plus-project
+        file-extension: yaml
+        refresh-enabled: true
+        # 本来 content-service-dev.yaml 配置文件应该由service模块拉取，但是它没有启动类，所以只能由api模块代为拉取
+        extension-configs:
+          - data-id: content-service-${spring.profiles.active}.yaml
+            group: xuecheng-plus-project
+            refresh: true
+        shared-configs:
+          - data-id: logging-${spring.profiles.active}.yaml
+            group: xuecheng-plus-common
+            refresh: true
+          - data-id: feign-${spring.profiles.active}.yaml
+            group: xuecheng-plus-common
+            refresh: true
+          - data-id: freemarker-${spring.profiles.active}.yaml
+            group: xuecheng-plus-common
+            refresh: true
+
+
+
+

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 配置文件每隔60秒检查更新 -->
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+
+<!-- 定义全局日志格式 -->
+<property name="log.pattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%-5level] %logger{50} - %msg%n"/>
+
+<!-- 定义日志文件所在目录 -->
+<property name="log.filePath" value="logs"/>
+
+<!-- 定义最长保留日期 -->
+<property name="log.maxHistory" value="30"/>
+
+<!-- ch.qos.logback.core.ConsoleAppender: 控制台附加器 -->
+<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+        <pattern>${log.pattern}</pattern>
+    </encoder>
+</appender>
+
+<!-- ch.qos.logback.core.rolling.RollingFileAppender: 滚动文件附加器 -->
+<!-- info级别日志的设置 -->
+<appender name="infoAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <encoder>
+        <pattern>${log.pattern}</pattern>
+    </encoder>
+
+    <!-- 日志文件的路径 -->
+    <file>${log.filePath}/info.log</file>
+
+    <!-- 设置基于时间(每天)的滚动策略，将日志内容按照日期来写入到相应的文件中-->
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+        <!-- 历史日志文件的路径 -->
+        <fileNamePattern>${log.filePath}/info/info-%d{yyyy-MM-dd}.log</fileNamePattern>
+
+        <!-- 历史日志文件的最大保留数量，即只保存最近30天的日志文件，超出的会被删除-->
+        <maxHistory>${log.maxHistory}</maxHistory>
+    </rollingPolicy>
+
+    <!-- 过滤掉非info以下级别的日志 -->
+    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+        <level>INFO</level>
+    </filter>
+</appender>
+
+<!-- error级别日志的设置 -->
+<appender name="errorAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <encoder>
+        <pattern>${log.pattern}</pattern>
+    </encoder>
+    <!-- 日志文件的路径 -->
+    <file>${log.filePath}/error.log</file>
+    <!-- 设置基于时间(每天)的滚动策略，将日志内容按照日期来写入到相应的文件中-->
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+        <!-- 历史日志文件的路径 -->
+        <fileNamePattern>${log.filePath}/error/error-%d{yyyy-MM-dd}.log</fileNamePattern>
+        <!-- 历史日志文件的最大保留数量，即只保存最近30天的日志文件，超出的会被删除-->
+        <maxHistory>${log.maxHistory}</maxHistory>
+    </rollingPolicy>
+
+    <!-- 过滤掉非error以下级别的日志 -->
+    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+        <level>ERROR</level>
+    </filter>
+</appender>
+
+<!-- 根记录器，捕获全局info及以上基本的日志 -->
+<springProfile name="dev">
+    <root level="INFO">
+        <appender-ref ref="console"/>
+    </root>
+</springProfile>
+
+<springProfile name="prod">
+    <root level="INFO">
+        <appender-ref ref="infoAppender"/>
+        <appender-ref ref="errorAppender"/>
+    </root>
+</springProfile>
+</configuration>

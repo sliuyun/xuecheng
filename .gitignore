@@ -1,0 +1,25 @@
+# 忽略编译输出
+**/target
+build/
+/asset/
+
+# 忽略日志文件
+*.log
+
+# 忽略系统文件
+.DS_Store
+Thumbs.db
+
+# 忽略IDE配置文件
+.idea/
+.vscode/
+
+# 忽略临时文件
+*.tmp
+*.swp
+
+/api-test/
+# 忽略iml文件
+*.iml
+
+
